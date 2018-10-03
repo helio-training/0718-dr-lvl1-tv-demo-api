@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/helio-training/0718-dr-lvl1-tv-demo-api#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "monk": "^6.0.6"
   }
 }
