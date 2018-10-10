@@ -1,9 +1,35 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const Joi = require('joi')
 const db = require('monk')('mongodb://admin:password1@ds050077.mlab.com:50077/tv-demo')
 const app = express()
 const port = 3003
 const tvShowsCollection = db.get('tvShows')
+
+const newTVShowScheme = Joi.object().keys({
+    name: Joi.string().required(),
+    rating: Joi.number().min(1).max(5).integer().required(),
+    imageUrl: Joi.string().uri().required()
+})
+const existingTVShowScheme = newTVShowScheme.append({
+    _id: { $oid: Joi.string().required() }
+})
+
+const validateNewTVShow = (req, res, next)=> {
+    const validationResult = Joi.validate(req.body, newTVShowScheme)
+    if (validationResult.error === null)
+        next()
+    else
+        res.send(validationResult.error)
+}
+
+const validateExistingTVShowScheme = (req, res, next) => {
+    const validationResult = Joi.validate(req.body, existingTVShowScheme)
+    if (validationResult.error === null)
+        next()
+    else
+        res.send(validationResult.error)
+}
 
 app.use(bodyParser.json())
 
@@ -20,7 +46,7 @@ app.get('/tv-show', async (req, res) => {
     res.send(tvShows)
 })
 
-app.post('/tv-show', (req, res) => {
+app.post('/tv-show', validateNewTVShow, (req, res) => {
     console.log(req.body)
     const savedTvShow = tvShowsCollection.insert(req.body)
     res.send(savedTvShow)
