@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const Joi = require('joi')
 const db = require('monk')('mongodb://admin:password1@ds050077.mlab.com:50077/tv-demo')
 const app = express()
-const port = 3003
+const port = process.env.PORT || 3003
 const tvShowsCollection = db.get('tvShows')
 
 const newTVShowScheme = Joi.object().keys({
