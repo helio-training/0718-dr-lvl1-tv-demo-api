@@ -41,6 +41,10 @@ app.use((req, res, next) => {
     next()
 })
 
+app.get('/', (req, res) => {
+    res.send('testing get')
+})
+
 app.get('/tv-show', async (req, res) => {
     const tvShows = await tvShowsCollection.find({})
     res.send(tvShows)
